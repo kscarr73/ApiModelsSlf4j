@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.progbits.api.slf4j</groupId>
-    <artifactId>ApiModelsSlf4j</artifactId>
+    <artifactId>ApiModelsSlf4j_jdk21</artifactId>
     <version>2.0.0</version>
     <packaging>jar</packaging>
 
