@@ -1,0 +1,22 @@
+outputs:
+  SysOut:
+    type: JSON
+    output: SysOut
+    format: default
+logs: 
+ default: 
+   level: INFO
+   output: SysOut
+formats:
+ - name: default
+   fields:
+     - name: timestamp
+     - name: date
+       mapping: date
+     - name: level
+     - name: message
+     - name: logger
+     - name: exceptionName
+       mapping: exception.name
+     - name: stackTrace
+       mapping: exception.stacktrace
