@@ -17,23 +17,24 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.locks.ReentrantLock;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.slf4j.Marker;
 import org.slf4j.event.Level;
 
 /**
- *
+ * Configuration for ApiModelsSlf4j Implementation
+ * 
  * @author scarr
  */
 public class ApiModelsSlf4jConfig {
-
-    private static final Logger LOG = LoggerFactory.getLogger(ApiModelsSlf4jConfig.class);
-
     private static ApiModelsSlf4jConfig instance = null;
     private static ReentrantLock lock;
-    public CountDownLatch configured = new CountDownLatch(1);
+    private final CountDownLatch configured = new CountDownLatch(1);
 
+    /**
+     * Get singleton configured instance
+     * 
+     * @return The instance for this class
+     */
     public static ApiModelsSlf4jConfig getInstance() {
         if (lock == null) {
             lock = new ReentrantLock();
@@ -96,10 +97,8 @@ public class ApiModelsSlf4jConfig {
 
         configured.countDown();
 
-        outputMngr = ApiModelsOutputManager.getInstance();
+        ApiModelsOutputManager.getInstance();
     }
-
-    private static ApiModelsOutputManager outputMngr;
 
     private static final String APIMODELS_CONFIG_FILE = "apilogging.yaml";
     private ApiObject config = null;
@@ -188,8 +187,6 @@ public class ApiModelsSlf4jConfig {
         if (null == mrk) {
             return Optional.empty();
         } else {
-            Optional<Boolean> retVal = Optional.empty();
-
             StringBuilder sb = new StringBuilder();
 
             sb.append(mrk.getName());

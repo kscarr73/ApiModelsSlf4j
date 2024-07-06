@@ -11,23 +11,24 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.ReentrantLock;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
- *
+ * Manage Outputs for the Logger implementation
+ * 
  * @author scarr
  */
 public class ApiModelsOutputManager {
-
-    private static final Logger LOG = LoggerFactory.getLogger(ApiModelsOutputManager.class);
 
     private static ApiModelsOutputManager instance = null;
     private static ReentrantLock lock;
     public CountDownLatch configured = new CountDownLatch(1);
 
+    /**
+     * Get singleton configured instance
+     * 
+     * @return The instance for this class
+     */
     public static ApiModelsOutputManager getInstance() {
         if (lock == null) {
             lock = new ReentrantLock();
@@ -58,7 +59,7 @@ public class ApiModelsOutputManager {
         config = ApiModelsSlf4jConfig.getInstance();
         setupWriters();
 
-        logProcessor = Thread.ofPlatform()
+        Thread.ofPlatform()
             .name("Api Model Logging")
             .daemon(true)
             .start(this::outputLogs);
@@ -80,12 +81,9 @@ public class ApiModelsOutputManager {
         Runtime.getRuntime().addShutdownHook(shutdownThread);
     }
 
-    private AtomicBoolean bContinue = new AtomicBoolean(true);
-
     private ApiModelsSlf4jConfig config;
     private static final LinkedBlockingQueue<ApiObject> queue = new LinkedBlockingQueue<>();
 
-    private Thread logProcessor;
     private Map<String, PrintWriter> outputs = new ConcurrentHashMap<>();
     private Map<String, String> outputFormat = new ConcurrentHashMap<>();
     private Map<String, String> outputType = new ConcurrentHashMap<>();
@@ -93,6 +91,11 @@ public class ApiModelsOutputManager {
     private static final JsonObjectWriter jsonWriter = new JsonObjectWriter(true);
     private static final YamlObjectWriter yamlWriter = new YamlObjectWriter(true);
 
+    /**
+     * Queue log entry for Output
+     * 
+     * @param log The ApiObject log entry to queue
+     */
     public void sendLog(ApiObject log) {
         queue.add(log);
     }
@@ -135,16 +138,6 @@ public class ApiModelsOutputManager {
                 Thread.currentThread().interrupt();
             }
         }
-
-//        System.out.println("In Interupt");
-//
-//        final LinkedList<ApiObject> finalLogs = new LinkedList<>();
-//
-//        queue.drainTo(finalLogs);
-//
-//        for (var log : finalLogs) {
-//            processLog(log);
-//        }
 
     }
 

@@ -15,6 +15,13 @@ import org.slf4j.helpers.MessageFormatter;
  */
 public class ApiModelLogCapture {
 
+    /**
+     * Convert an Event to ApiObject
+     * 
+     * @param le Logging Event to process
+     * 
+     * @return ApiObject of the Processed Logging Event
+     */
     public static ApiObject eventToApiObject(LoggingEvent le) {
         ApiObject retObj = new ApiObject();
         
@@ -65,6 +72,18 @@ public class ApiModelLogCapture {
         return retObj;
     }
 
+    /**
+     * Process a standard log request to ApiObject
+     * 
+     * @param logger Logger Name to log
+     * @param level Level Enum
+     * @param marker Marker if set
+     * @param message Message, may use {} as replacable values
+     * @param args Arguments to replace {} with
+     * @param thrwbl Throwable
+     * 
+     * @return ApiObject of the Processed Logging Event
+     */
     public static ApiObject logToApiObject(String logger, Level level, Marker marker, String message, Object[] args, Throwable thrwbl) {
         ApiObject retObj = new ApiObject();
 
@@ -90,6 +109,11 @@ public class ApiModelLogCapture {
         return retObj;
     }
 
+    /**
+     * Get MDC object if it is set
+     * 
+     * @return ApiObject for the MDC object
+     */
     public static ApiObject getMdcObject() {
         ApiObject mdcObj = null;
 

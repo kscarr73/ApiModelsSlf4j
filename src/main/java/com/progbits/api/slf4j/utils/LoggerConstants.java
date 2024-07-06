@@ -1,7 +1,8 @@
 package com.progbits.api.slf4j.utils;
 
 /**
- *
+ * Constants for ApiModels Slf4j Implementation
+ * 
  * @author scarr
  */
 public class LoggerConstants {

@@ -9,7 +9,8 @@ import org.slf4j.helpers.AbstractLogger;
 import org.slf4j.spi.LoggingEventAware;
 
 /**
- *
+ * Logger Implementation for SLF4j
+ * 
  * @author scarr
  */
 public class ApiModelsLogger extends AbstractLogger implements LoggingEventAware {
@@ -23,10 +24,6 @@ public class ApiModelsLogger extends AbstractLogger implements LoggingEventAware
     private static final ApiModelsOutputManager outputMngr = ApiModelsOutputManager.getInstance();
     
     private int currentLogLevel = Level.INFO.toInt();
-    
-    private String computeShortName() {
-        return name.substring(name.lastIndexOf(".") + 1);
-    }
  
     public int getCurrentLevel() {
         return currentLogLevel;
@@ -40,26 +37,41 @@ public class ApiModelsLogger extends AbstractLogger implements LoggingEventAware
         this.currentLogLevel = lvl;
     }
     
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void handleNormalizedLoggingCall(Level level, Marker marker, String string, Object[] os, Throwable thrwbl) {
         outputMngr.sendLog(ApiModelLogCapture.logToApiObject(name, level, marker, string, os, thrwbl));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void log(LoggingEvent le) {
         outputMngr.sendLog(ApiModelLogCapture.eventToApiObject(le));
     }
     
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected String getFullyQualifiedCallerName() {
         return name;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean isTraceEnabled() {
         return Level.TRACE.toInt() >= currentLogLevel;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean isTraceEnabled(Marker marker) {
         Optional<Boolean> bMrkRet = config.getMarkerLevel(Level.TRACE, marker);
@@ -71,11 +83,17 @@ public class ApiModelsLogger extends AbstractLogger implements LoggingEventAware
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean isDebugEnabled() {
         return Level.DEBUG.toInt() >= currentLogLevel;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean isDebugEnabled(Marker marker) {
         Optional<Boolean> bMrkRet = config.getMarkerLevel(Level.DEBUG, marker);
@@ -87,11 +105,17 @@ public class ApiModelsLogger extends AbstractLogger implements LoggingEventAware
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean isInfoEnabled() {
         return Level.INFO.toInt() >= currentLogLevel;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean isInfoEnabled(Marker marker) {
         Optional<Boolean> bMrkRet = config.getMarkerLevel(Level.INFO, marker);
@@ -103,11 +127,17 @@ public class ApiModelsLogger extends AbstractLogger implements LoggingEventAware
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean isWarnEnabled() {
         return Level.WARN.toInt() >= currentLogLevel;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean isWarnEnabled(Marker marker) {
         Optional<Boolean> bMrkRet = config.getMarkerLevel(Level.WARN, marker);
@@ -119,11 +149,17 @@ public class ApiModelsLogger extends AbstractLogger implements LoggingEventAware
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean isErrorEnabled() {
         return Level.ERROR.toInt() >= currentLogLevel;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean isErrorEnabled(Marker marker) {
         Optional<Boolean> bMrkRet = config.getMarkerLevel(Level.ERROR, marker);

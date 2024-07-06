@@ -8,16 +8,13 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import org.slf4j.ILoggerFactory;
 import org.slf4j.Logger;
-import org.slf4j.event.Level;
 
 /**
- *
+ * Slf4j Logger Implementation
+ * 
  * @author scarr
  */
 public class ApiModelsFactory implements ILoggerFactory {
-
-    private static final YamlObjectWriter yamlWriter = new YamlObjectWriter(true);
-
     ConcurrentMap<String, ApiModelsLogger> loggerMap = new ConcurrentHashMap<>();
 
     @Override
