@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.progbits.api.slf4j</groupId>
-    <artifactId>ApiModelsSlf4j_jdk21</artifactId>
+    <artifactId>ApiModelsSlf4j_jre21</artifactId>
     <version>2.0.0</version>
     <packaging>jar</packaging>
 
@@ -13,6 +14,13 @@
         <maven.compiler.target>21</maven.compiler.target>
     </properties>
 
+    <repositories>
+        <repository>
+            <id>ProgbitsRepo</id>
+	    <url>https://archiva.progbits.com/coffer/repository/internal/</url>
+        </repository>
+    </repositories>
+    
     <distributionManagement>
         <repository>
             <id>progbits</id>
@@ -20,7 +28,7 @@
             <url>https://archiva.progbits.com/coffer/repository/internal/</url>
         </repository>
     </distributionManagement>
-	
+
     <dependencies>
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -35,7 +43,7 @@
         </dependency>
         <dependency>
             <groupId>com.progbits.api.transforms</groupId>
-            <artifactId>ApiTransforms</artifactId>
+            <artifactId>ApiTransforms_jre21</artifactId>
             <version>2.0.0</version>
         </dependency>
     </dependencies>
@@ -45,7 +53,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>3.6.3</version>
+                <version>3.7.0</version>
                 <executions>
                     <execution>
                         <id>attach-javadocs</id>
@@ -56,11 +64,23 @@
                             <additionalOptions>-html5</additionalOptions>
                         </configuration>
                     </execution>
-                    
+
                 </executions>
             </plugin>
         </plugins>
-
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-source-plugin</artifactId>
+            <version>3.3.1</version>
+            <executions>
+                <execution>
+                    <id>attach-sources</id>
+                    <goals>
+                        <goal>jar</goal>
+                    </goals>
+                </execution>
+            </executions>
+        </plugin>
 
     </build>
 
