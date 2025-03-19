@@ -91,6 +91,10 @@ public class ApiModelsOutputManager {
     private static final JsonObjectWriter jsonWriter = new JsonObjectWriter(true);
     private static final YamlObjectWriter yamlWriter = new YamlObjectWriter(true);
 
+    public Integer getLogSize() {
+        return queue.size();
+    }
+    
     /**
      * Queue log entry for Output
      * 

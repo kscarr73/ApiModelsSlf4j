@@ -28,6 +28,8 @@ Api Models Slf4j uses a single yaml file to setup configuration: `apilogging.yam
 
 ## Example
 
+File Name: `resources/apilogging.yaml`
+
 ```yaml
 logs:
   default: 

@@ -103,13 +103,18 @@ public class ApiModelsFactory implements ILoggerFactory {
         }
     }
 
+    /**
+     * Set a Logger level.
+     * 
+     * This will set a logger in the system
+     * 
+     * @param name Name of the logger to set
+     * @param level Level to use for this logger
+     */
     public void setLoggerLevel(String name, String level) {
-        int logLevel = ApiModelsSlf4jConfig.getInstance().getLogLevel(level);
-
-        for (var entry : loggerMap.entrySet()) {
-            if (entry.getKey().startsWith(name)) {
-                entry.getValue().setLogLevel(logLevel);
-            }
-        }
+        ApiModelsLogger logger = new ApiModelsLogger(name);
+        logger.setLogLevel(level);
+        
+        loggerMap.put(name, logger);
     }
 }
