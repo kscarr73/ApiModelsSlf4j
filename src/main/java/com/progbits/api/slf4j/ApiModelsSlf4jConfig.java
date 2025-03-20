@@ -4,6 +4,8 @@ import com.progbits.api.exception.ApiClassNotFoundException;
 import com.progbits.api.exception.ApiException;
 import com.progbits.api.model.ApiObject;
 import com.progbits.api.parser.YamlObjectParser;
+import com.progbits.api.utils.service.ApiInstance;
+import com.progbits.api.utils.service.ApiService;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,8 +17,6 @@ import java.nio.file.Paths;
 import java.util.Iterator;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.locks.ReentrantLock;
 import org.slf4j.Marker;
 import org.slf4j.event.Level;
 
@@ -25,45 +25,21 @@ import org.slf4j.event.Level;
  * 
  * @author scarr
  */
-public class ApiModelsSlf4jConfig {
-    private static ApiModelsSlf4jConfig instance = null;
-    private static ReentrantLock lock;
-    private final CountDownLatch configured = new CountDownLatch(1);
-
+public class ApiModelsSlf4jConfig implements ApiService {
+    
+    private static final ApiInstance<ApiModelsSlf4jConfig> instance = new ApiInstance<>();
+    
     /**
      * Get singleton configured instance
      * 
      * @return The instance for this class
      */
     public static ApiModelsSlf4jConfig getInstance() {
-        if (lock == null) {
-            lock = new ReentrantLock();
-        }
-
-        if (instance == null) {
-            lock.lock();
-
-            try {
-                if (instance == null) {
-                    instance = new ApiModelsSlf4jConfig();
-
-                    instance.configure();
-                }
-            } finally {
-                lock.unlock();
-            }
-        }
-
-        try {
-            instance.configured.await();
-        } catch (InterruptedException ex) {
-            // nothing to report
-        }
-
-        return instance;
+        return instance.getInstance(ApiModelsSlf4jConfig.class);
     }
 
-    protected void configure() {
+    @Override
+    public void configure() {
         YamlObjectParser parser = new YamlObjectParser(true);
         Path path = Paths.get("./" + APIMODELS_CONFIG_FILE);
 
@@ -94,10 +70,6 @@ public class ApiModelsSlf4jConfig {
         ApiObject logs = getConfigLogs();
 
         defaultLogLevel = convertLevelToInt(logs.getString("default.level", "INFO"));
-
-        configured.countDown();
-
-        ApiModelsOutputManager.getInstance();
     }
 
     private static final String APIMODELS_CONFIG_FILE = "apilogging.yaml";
@@ -105,7 +77,7 @@ public class ApiModelsSlf4jConfig {
 
     private int defaultLogLevel = Level.INFO.toInt();
 
-    private ConcurrentHashMap<String, Integer> loggerLevels = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String, Integer> loggerLevels = new ConcurrentHashMap<>();
 
     private static final String APIMODELS_DEFAULT_CONFIG = """
                                                            outputs:

@@ -2,6 +2,8 @@ package com.progbits.api.slf4j;
 
 import com.progbits.api.model.ApiObject;
 import static com.progbits.api.slf4j.utils.LoggerConstants.*;
+import com.progbits.api.utils.service.ApiInstance;
+import com.progbits.api.utils.service.ApiService;
 import com.progbits.api.writer.JsonObjectWriter;
 import com.progbits.api.writer.YamlObjectWriter;
 import java.io.FileOutputStream;
@@ -9,53 +11,28 @@ import java.io.PrintWriter;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Manage Outputs for the Logger implementation
  * 
  * @author scarr
  */
-public class ApiModelsOutputManager {
+public class ApiModelsOutputManager implements ApiService {
 
-    private static ApiModelsOutputManager instance = null;
-    private static ReentrantLock lock;
-    public CountDownLatch configured = new CountDownLatch(1);
-
+    private static final ApiInstance<ApiModelsOutputManager> instance = new ApiInstance<>();
+    
     /**
      * Get singleton configured instance
      * 
      * @return The instance for this class
      */
     public static ApiModelsOutputManager getInstance() {
-        if (lock == null) {
-            lock = new ReentrantLock();
-        }
-
-        if (instance == null) {
-            lock.lock();
-
-            try {
-                instance = new ApiModelsOutputManager();
-
-                instance.configure();
-            } finally {
-                lock.unlock();
-            }
-        }
-
-        try {
-            instance.configured.await();
-        } catch (InterruptedException ex) {
-            // nothing to report
-        }
-
-        return instance;
+        return instance.getInstance(ApiModelsOutputManager.class);
     }
 
-    protected void configure() {
+    @Override
+    public void configure() {
         config = ApiModelsSlf4jConfig.getInstance();
         setupWriters();
 
@@ -63,8 +40,6 @@ public class ApiModelsOutputManager {
             .name("Api Model Logging")
             .daemon(true)
             .start(this::outputLogs);
-
-        configured.countDown();
 
         Thread shutdownThread = Thread.ofPlatform().daemon(false).unstarted(() -> {
             final LinkedList<ApiObject> finalLogs = new LinkedList<>();
@@ -84,9 +59,9 @@ public class ApiModelsOutputManager {
     private ApiModelsSlf4jConfig config;
     private static final LinkedBlockingQueue<ApiObject> queue = new LinkedBlockingQueue<>();
 
-    private Map<String, PrintWriter> outputs = new ConcurrentHashMap<>();
-    private Map<String, String> outputFormat = new ConcurrentHashMap<>();
-    private Map<String, String> outputType = new ConcurrentHashMap<>();
+    private final Map<String, PrintWriter> outputs = new ConcurrentHashMap<>();
+    private final Map<String, String> outputFormat = new ConcurrentHashMap<>();
+    private final Map<String, String> outputType = new ConcurrentHashMap<>();
 
     private static final JsonObjectWriter jsonWriter = new JsonObjectWriter(true);
     private static final YamlObjectWriter yamlWriter = new YamlObjectWriter(true);

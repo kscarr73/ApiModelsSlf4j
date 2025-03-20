@@ -27,6 +27,7 @@ public class ApiModelsProvider implements SLF4JServiceProvider {
         markerFactory = new BasicMarkerFactory();
         mdcAdapter = new BasicMDCAdapter();
         ApiModelsSlf4jConfig.getInstance();
+        ApiModelsOutputManager.getInstance();
     }
     
     /** {@inheritDoc} */
